@@ -1,0 +1,31 @@
+name: "YUBIZ LOG"
+title: "YUBIZ LOG - 기록"
+description: "기술과 스스로의 경험에 집중하는 개인 블로그입니다."
+author: "YUBIZ"
+
+text:
+  navPosts: "글 목록"
+  darkModeToggle: "다크 모드 전환"
+  recentPosts: "최근 작성된 기록"
+  searchPlaceholder: "검색..."
+  sortNewest: "최신순"
+  sortOldest: "오래된순"
+  sortTitle: "제목순"
+  noResults: "검색 결과가 없습니다."
+  reset: "초기화"
+  backToPosts: "글 목록으로"
+  tocTitle: "목차"
+  allCategory: "전체"
+  footerRights: "All rights reserved."
+  adLabel: "광고"
+
+ads:
+  enabled: "true"
+  adsenseId: "ca-pub-9924460749498519"
+  slotHome: ""
+  slotPostsList: ""
+  slotPostDetail: ""
+
+analytics:
+  enabled: "true"
+  gaId: "G-P83EXL6G8Q"
