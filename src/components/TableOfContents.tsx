@@ -1,12 +1,5 @@
-import React from 'react';
 import { blogConfig } from '../config/blogConfig';
-
-export interface HeadingItem {
-  id: string;
-  text: React.ReactNode;
-  level: number;
-  number: string;
-}
+import type { HeadingItem } from '../types/markdown';
 
 interface TableOfContentsProps {
   headings: HeadingItem[];

@@ -32,6 +32,10 @@ button, a, [role="button"] {
   cursor: pointer;
 }
 
+button:disabled {
+  cursor: not-allowed;
+}
+
 .toc-no-scrollbar::-webkit-scrollbar { display: none; }
 .toc-no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 

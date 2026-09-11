@@ -6,11 +6,11 @@ import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import rehypeSlug from 'rehype-slug';
-import GithubSlugger from 'github-slugger';
+import { getHeadings } from '../lib/markdownToc';
 import { useBlog } from '../context/BlogContext';
 import { ArrowLeft } from 'lucide-react';
 import Sidebar from './Sidebar';
-import TableOfContents, { HeadingItem } from './TableOfContents';
+import TableOfContents from './TableOfContents';
 import { Post } from '../types/blog';
 import { blogConfig } from '../config/blogConfig';
 import Ad from './Ad';
@@ -25,39 +25,6 @@ const sanitizeSchema = {
     ],
   },
 };
-
-function getHeadings(InText: string): HeadingItem[] {
-  const headings: HeadingItem[] = [];
-  const slugger = new GithubSlugger();
-  const counters = [0, 0, 0, 0];
-  const lines = InText.split(/\r?\n/);
-  let inCodeBlock = false;
-
-  lines.forEach(line => {
-    if (line.trim().startsWith('```')) {
-      inCodeBlock = !inCodeBlock;
-      return;
-    }
-    if (inCodeBlock) return;
-
-    const match = line.match(/^(#{1,4})\s+(.+)$/);
-    if (!match) return;
-
-    const text = match[2].replace(/[`*_]/g, '');
-    const level = match[1].length;
-    counters[level - 1] += 1;
-    for (let index = level; index < counters.length; index += 1) counters[index] = 0;
-
-    headings.push({
-      id: slugger.slug(text),
-      text,
-      level,
-      number: counters.slice(0, level).join('.'),
-    });
-  });
-
-  return headings;
-}
 
 interface PostDetailViewProps {
   post: Post;
