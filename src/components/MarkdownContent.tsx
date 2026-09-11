@@ -32,13 +32,6 @@ function getNodeText(InNode: React.ReactNode): string {
 function CodeBlock({ children }: { children?: React.ReactNode }) {
   const [copied, setCopied] = useState(false);
   const code = getNodeText(children);
-  const blockChildren = React.Children.map(children, child => {
-    if (!React.isValidElement(child)) return child;
-    const element = child as React.ReactElement<{ className?: string }>;
-    const className = element.props.className || '';
-    return React.cloneElement(element, { className: className.includes('hljs') ? className : 'hljs' });
-  });
-
   const handleCopy = async () => {
     await navigator.clipboard.writeText(code);
     setCopied(true);
@@ -47,7 +40,7 @@ function CodeBlock({ children }: { children?: React.ReactNode }) {
 
   return (
     <div className="group relative my-6">
-      <pre className="code-block overflow-x-auto">{blockChildren}</pre>
+      <pre className="code-block overflow-x-auto">{children}</pre>
       <button
         type="button"
         onClick={handleCopy}
@@ -103,5 +96,5 @@ export default function MarkdownContent({ content, onImageClick }: MarkdownConte
     },
   }), [onImageClick]);
 
-  return <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[[rehypeSanitize, sanitizeSchema], rehypeSlug, rehypeHighlight]} components={components}>{content}</ReactMarkdown>;
+  return <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[[rehypeSanitize, sanitizeSchema], rehypeSlug, [rehypeHighlight, { detect: true }]]} components={components}>{content}</ReactMarkdown>;
 }
