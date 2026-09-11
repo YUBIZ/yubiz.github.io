@@ -44,3 +44,4 @@ next-env.d.ts
 /src/config/blogConfig.ts
 /public/posts.json
 /public/ads.txt
+/public/highlight-theme.css

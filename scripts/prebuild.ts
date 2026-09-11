@@ -1,9 +1,11 @@
 import fs from 'fs';
 import path from 'path';
+import { parse as parseYamlDocument } from 'yaml';
 
 const CONFIG_OUT_DIR = path.join(process.cwd(), 'src/config');
 const CONFIG_YAML_PATH = path.join(process.cwd(), 'blog-config.yaml');
 const PUBLIC_DIR = path.join(process.cwd(), 'public');
+const HIGHLIGHT_THEMES_DIR = path.join(process.cwd(), 'node_modules/highlight.js/styles');
 
 if (!fs.existsSync(CONFIG_OUT_DIR)) fs.mkdirSync(CONFIG_OUT_DIR, { recursive: true });
 if (!fs.existsSync(PUBLIC_DIR)) fs.mkdirSync(PUBLIC_DIR, { recursive: true });
@@ -13,41 +15,8 @@ function escapeStr(InVal: string): string {
   return InVal.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 }
 
-/// @brief YAML 파일을 파싱하여 설정 객체를 반환합니다. (1단계 중첩 지원)
-function parseYaml(InContent: string): Record<string, string | Record<string, string>> {
-  const config: Record<string, string | Record<string, string>> = {};
-  const lines = InContent.split(/\r?\n/);
-  let currentSection: string | null = null;
-
-  for (const line of lines) {
-    if (line.trim().startsWith('#') || line.trim() === '') continue;
-
-    const indent = line.length - line.trimStart().length;
-    const trimmed = line.trim();
-    const colonIndex = trimmed.indexOf(':');
-    if (colonIndex === -1) continue;
-
-    const key = trimmed.substring(0, colonIndex).trim();
-    let val = trimmed.substring(colonIndex + 1).trim();
-
-    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
-      val = val.substring(1, val.length - 1);
-    }
-
-    if (indent === 0) {
-      if (val === '') {
-        currentSection = key;
-        config[key] = {};
-      } else {
-        currentSection = null;
-        config[key] = val;
-      }
-    } else if (currentSection) {
-      (config[currentSection] as Record<string, string>)[key] = val;
-    }
-  }
-
-  return config;
+function parseYaml(InContent: string): Record<string, unknown> {
+  return parseYamlDocument(InContent) as Record<string, unknown>;
 }
 
 /// @brief blog-config.yaml을 컴파일하여 TypeScript 설정 모듈을 생성합니다.
@@ -86,13 +55,45 @@ ${allLines.join(',\n')},
 
 /// @brief AdSense ads.txt를 생성합니다.
 /// @note ads.txt는 인증된 광고 판매자를 선언하는 파일로 사이트 루트에 배치됩니다.
+function compileHighlightTheme(): void {
+  const content = fs.readFileSync(CONFIG_YAML_PATH, 'utf-8');
+  const config = parseYaml(content);
+  const theme = typeof config.codeTheme === 'string' ? config.codeTheme : 'github';
+  const themes: Record<string, [string, string]> = {
+    github: ['github.css', 'github-dark.css'],
+    monokai: ['monokai.css', 'monokai.css'],
+    nord: ['nord.css', 'nord.css'],
+    dracula: ['base16/dracula.css', 'base16/dracula.css'],
+    'visual-studio': ['vs.css', 'vs2015.css'],
+  };
+  const [lightFile, darkFile] = themes[theme] || themes.github;
+
+  const scope = (css: string, selector: string): string => css
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/([^{}]+)\{([^{}]*)\}/g, (_, selectors: string, declarations: string) => {
+      const scoped = selectors.split(',').map(item => `${selector} ${item.trim()}`).join(',\n');
+      return `${scoped} {${declarations}}`;
+    });
+
+  const lightCss = fs.readFileSync(path.join(HIGHLIGHT_THEMES_DIR, lightFile), 'utf-8');
+  const darkCss = fs.readFileSync(path.join(HIGHLIGHT_THEMES_DIR, darkFile), 'utf-8');
+  const output = [
+    scope(lightCss, `html[data-code-theme="${theme}"]:not(.dark)`),
+    scope(darkCss, `html.dark[data-code-theme="${theme}"]`),
+  ].join('\n');
+
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'highlight-theme.css'), output, 'utf-8');
+}
+
 function compileAdsTxt(): void {
   const content = fs.readFileSync(CONFIG_YAML_PATH, 'utf-8');
   const config = parseYaml(content);
   const ads = config.ads as Record<string, string> | undefined;
+  const adsTxtPath = path.join(PUBLIC_DIR, 'ads.txt');
 
-  if (!ads || !ads.adsenseId) {
-    console.log('ads.txt: AdSense ID가 없어 생성을 건너뜁니다.');
+  if (!ads || ads.enabled !== 'true' || !ads.adsenseId) {
+    if (fs.existsSync(adsTxtPath)) fs.unlinkSync(adsTxtPath);
+    console.log('ads.txt: 광고가 비활성화되었거나 AdSense ID가 없어 생성을 건너뜁니다.');
     return;
   }
 
@@ -100,9 +101,10 @@ function compileAdsTxt(): void {
   const pubId = ads.adsenseId.replace('ca-', '');
   const adsTxt = `google.com, ${pubId}, DIRECT, f08c47fec0942fa0\n`;
 
-  fs.writeFileSync(path.join(PUBLIC_DIR, 'ads.txt'), adsTxt, 'utf-8');
+  fs.writeFileSync(adsTxtPath, adsTxt, 'utf-8');
   console.log('public/ads.txt 생성 완료.');
 }
 
 compileYamlConfig();
+compileHighlightTheme();
 compileAdsTxt();

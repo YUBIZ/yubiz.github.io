@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { BlogProvider } from "../context/BlogContext";
 import BlogAppShell from "../components/BlogAppShell";
@@ -51,11 +52,15 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
+      data-code-theme={blogConfig.codeTheme}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>
         {/* FOUC 방지를 위한 다크 모드 초기화 스크립트 */}
+        {/* 선택된 Highlight.js 공식 테마를 빌드 결과에서 로드합니다. */}
+        {/* eslint-disable-next-line @next/next/no-css-tags */}
+        <link rel="stylesheet" href="/highlight-theme.css" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -69,22 +74,27 @@ export default function RootLayout({
             `,
           }}
         />
+      </head>
+      <body className="min-h-full">
         {/* Google AdSense (광고 활성화 시에만 로드) */}
         {bAdsEnabled && (
-          <script
+          <Script
             async
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${blogConfig.ads.adsenseId}`}
             crossOrigin="anonymous"
+            strategy="afterInteractive"
           />
         )}
         {/* Google Analytics (분석 활성화 시에만 로드) */}
         {bAnalyticsEnabled && (
           <>
-            <script
+            <Script
               async
               src={`https://www.googletagmanager.com/gtag/js?id=${blogConfig.analytics.gaId}`}
+              strategy="afterInteractive"
             />
-            <script
+            <Script
+              id="google-analytics"
               dangerouslySetInnerHTML={{
                 __html: `
                   window.dataLayer = window.dataLayer || [];
@@ -93,11 +103,10 @@ export default function RootLayout({
                   gtag('config', '${blogConfig.analytics.gaId}');
                 `,
               }}
+              strategy="afterInteractive"
             />
           </>
         )}
-      </head>
-      <body className="min-h-full">
         <BlogProvider>
           <BlogAppShell>{children}</BlogAppShell>
         </BlogProvider>

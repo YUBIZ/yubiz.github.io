@@ -2,6 +2,7 @@ name: "YUBIZ LOG"
 title: "YUBIZ LOG - 기록"
 description: "기술과 스스로의 경험에 집중하는 개인 블로그입니다."
 author: "YUBIZ"
+codeTheme: "visual-studio"
 
 text:
   navPosts: "글 목록"

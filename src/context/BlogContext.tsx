@@ -29,16 +29,20 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [darkMode, setDarkMode] = useState(false);
 
-  // head 스크립트에서 설정된 다크 모드 상태를 동기화합니다.
+  // head 스크립트가 적용한 다크 모드 상태를 첫 브라우저 프레임 이후 동기화합니다.
+  // 비동기로 실행하여 초기 렌더링 중 추가 동기 렌더링을 방지합니다.
   useEffect(() => {
-    setDarkMode(document.documentElement.classList.contains('dark'));
+    const timer = window.setTimeout(() => {
+      setDarkMode(document.documentElement.classList.contains('dark'));
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   /// @brief 뷰를 전환하고 URL 경로를 업데이트합니다.
   const setView = (InView: ViewType, InPostId: string | null = null) => {
     let targetPath = '/';
-    if (InView === 'post' && InPostId) targetPath = `/post/${InPostId}`;
-    else if (InView === 'posts') targetPath = '/posts';
+    if (InView === 'post' && InPostId) targetPath = `/post/${InPostId}/`;
+    else if (InView === 'posts') targetPath = '/posts/';
     router.push(targetPath);
   };
 

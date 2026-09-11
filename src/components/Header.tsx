@@ -10,7 +10,7 @@ import { blogConfig } from '../config/blogConfig';
 export default function Header() {
   const { setView, darkMode, toggleDarkMode } = useBlog();
   const pathname = usePathname();
-  const bIsPostsView = pathname === '/posts';
+  const bIsPostsView = pathname === '/posts' || pathname === '/posts/';
 
   return (
     <header className="sticky top-0 z-40 border-b border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950 transition-colors">

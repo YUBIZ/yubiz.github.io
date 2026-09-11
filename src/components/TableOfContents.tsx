@@ -1,24 +1,19 @@
 import React from 'react';
 import { blogConfig } from '../config/blogConfig';
 
-/// @brief 목차 헤딩 항목 인터페이스입니다.
 export interface HeadingItem {
   id: string;
   text: React.ReactNode;
   level: number;
+  number: string;
 }
 
-/// @brief 목차 컴포넌트의 Props 인터페이스입니다.
 interface TableOfContentsProps {
   headings: HeadingItem[];
   onHeadingClick: (InId: string) => void;
 }
 
-/// @brief 게시글 목차를 렌더링하는 컴포넌트입니다.
-export default function TableOfContents({
-  headings,
-  onHeadingClick,
-}: TableOfContentsProps) {
+export default function TableOfContents({ headings, onHeadingClick }: TableOfContentsProps) {
   if (headings.length === 0) return null;
 
   return (
@@ -27,17 +22,25 @@ export default function TableOfContents({
         {blogConfig.text.tocTitle}
       </h3>
       <div className="space-y-2">
-        {headings.map(h => (
-          <button
-            key={h.id}
-            onClick={() => onHeadingClick(h.id)}
-            className={`block text-left text-xs transition-colors cursor-pointer w-full text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300 ${
-              h.level === 4 ? 'pl-3' : ''
-            }`}
-          >
-            {h.text}
-          </button>
-        ))}
+        {headings.map(heading => {
+          const levelClass = {
+            1: 'pl-0 font-medium',
+            2: 'pl-2',
+            3: 'pl-4',
+            4: 'pl-6',
+          }[heading.level] || 'pl-0';
+
+          return (
+            <button
+              key={heading.id}
+              onClick={() => onHeadingClick(heading.id)}
+              className={`block w-full text-left text-xs transition-colors cursor-pointer text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300 ${levelClass}`}
+            >
+              <span className="mr-1 font-mono text-zinc-300 dark:text-zinc-700">{heading.number}</span>
+              {heading.text}
+            </button>
+          );
+        })}
       </div>
     </nav>
   );

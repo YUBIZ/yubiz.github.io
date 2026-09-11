@@ -31,8 +31,6 @@ export default function PostsView({ posts }: PostsViewProps) {
 
   const [sortBy, setSortBy] = useState<SortBy>('newest');
 
-  // region Query
-
   const categories = React.useMemo(() => {
     const uniqueCats = Array.from(new Set(posts.map(p => p.category))).filter(Boolean);
     return [blogConfig.text.allCategory, ...uniqueCats];
@@ -51,7 +49,7 @@ export default function PostsView({ posts }: PostsViewProps) {
     return Array.from(tagsSet).sort();
   }, [posts]);
 
-  const isTagAvailable = (InTag: string) => {
+  const isTagAvailable = React.useCallback((InTag: string) => {
     if (selectedTags.includes(InTag)) return true;
     const prospectiveTags = [...selectedTags, InTag];
     return posts.some(post => {
@@ -59,11 +57,8 @@ export default function PostsView({ posts }: PostsViewProps) {
       if (!bMatchesCategory) return false;
       return prospectiveTags.every(t => post.tags.includes(t));
     });
-  };
+  }, [posts, selectedCategory, selectedTags]);
 
-  // endregion
-
-  // region Filter
 
   const filteredPosts = React.useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -109,18 +104,13 @@ export default function PostsView({ posts }: PostsViewProps) {
     return result;
   }, [filteredPosts, sortBy]);
 
-  // endregion
-
-  // region Lifecycle
 
   React.useEffect(() => {
     const validTags = selectedTags.filter(tag => isTagAvailable(tag));
     if (validTags.length !== selectedTags.length) {
       setSelectedTags(validTags);
     }
-  }, [allTags, selectedTags, setSelectedTags]);
-
-  // endregion
+  }, [isTagAvailable, selectedTags, setSelectedTags]);
 
   return (
     <div className="mx-auto max-w-2xl px-4 sm:px-6 py-8 sm:py-10 animate-fade-in">
