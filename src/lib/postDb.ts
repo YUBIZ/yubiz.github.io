@@ -2,8 +2,24 @@ import fs from 'fs';
 import path from 'path';
 import { Post } from '../types/blog';
 import { parseMarkdown } from './markdown';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import { visit } from 'unist-util-visit';
+import { toString } from 'mdast-util-to-string';
 
 const POSTS_DIR = path.join(process.cwd(), 'posts');
+
+function createExcerpt(InContent: string): string {
+  const tree = unified().use(remarkParse).parse(InContent.replace(/\\\r?\n/g, ' '));
+  const paragraphs: string[] = [];
+
+  visit(tree, 'paragraph', (node, _index, parent) => {
+    if (parent?.type === 'root') paragraphs.push(toString(node));
+  });
+
+  const plainText = paragraphs.join(' ').replace(/\\\s*/g, ' ').replace(/\s+/g, ' ').trim();
+  return plainText.substring(0, 120) + (plainText.length > 120 ? '...' : '');
+}
 
 /// @brief 모든 게시글을 날짜 내림차순으로 조회합니다.
 /// @note posts 하위 폴더명을 게시글 카테고리로 사용합니다.
@@ -40,7 +56,7 @@ export function getPosts(): Post[] {
         id,
         title: metadata.title || '제목 없음',
         content,
-        excerpt: content.replace(/\n/g, ' ').substring(0, 120) + (content.length > 120 ? '...' : ''),
+        excerpt: createExcerpt(content),
         category,
         tags: metadata.tags || [],
         createdAt: metadata.date || new Date().toISOString().split('T')[0],

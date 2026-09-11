@@ -81,7 +81,7 @@ export default function PostDetailView({ post: InPost }: PostDetailViewProps) {
       return <h5 id={id} className="mt-8 mb-3 text-base font-bold text-zinc-900 dark:text-zinc-50 scroll-mt-20">{children}</h5>;
     },
     p: ({ children }: { children?: React.ReactNode }) => (
-      <p className="mb-6 leading-relaxed text-zinc-800 dark:text-zinc-200 text-[15px] sm:text-base font-serif break-keep">{children}</p>
+      <p className="mb-6 leading-relaxed text-zinc-800 dark:text-zinc-200 text-[15px] sm:text-base break-keep">{children}</p>
     ),
     blockquote: ({ children }: { children?: React.ReactNode }) => (
       <blockquote className="my-6 border-l-2 border-zinc-300 pl-4 italic text-zinc-600 dark:border-zinc-700 dark:text-zinc-400">{children}</blockquote>

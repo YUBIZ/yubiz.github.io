@@ -23,6 +23,22 @@ codeTheme: "github"
 | `description` | 사이트 설명 및 SEO 설명 |
 | `author` | 작성자 이름 |
 | `codeTheme` | 코드 블록 색상 테마 |
+| `fontFamily` | 사이트 기본 폰트 패밀리 |
+
+### 폰트 패밀리
+
+블로그 전체에 사용할 하나의 글꼴 패밀리 이름을 지정합니다. 비워 두거나 설정하지 않으면 시스템 폰트를 사용합니다.
+
+```yaml
+fontFamily: "system-ui"
+# codeFontFamily: "monospace"
+```
+
+공백이 포함된 글꼴 이름은 따옴표로 감쌉니다. 코드 블록과 인라인 코드는 기본적으로 본문 폰트를 상속합니다. 별도 폰트를 사용하려면 `codeFontFamily`를 추가합니다.
+
+```yaml
+codeFontFamily: "monospace"
+```
 
 ### 코드 블록 테마
 

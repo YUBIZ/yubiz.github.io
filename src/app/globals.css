@@ -15,8 +15,6 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
   --animate-fade-in: fade-in 0.2s ease-out;
 }
 
@@ -57,8 +55,13 @@ code:not(.hljs) {
   border-radius: 0.25rem;
   background: #f4f4f5;
   color: #3f3f46;
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--blog-code-font-family, inherit);
   font-size: 0.8125em;
+}
+
+.code-block,
+.code-block code.hljs {
+  font-family: var(--blog-code-font-family, inherit);
 }
 
 .dark code:not(.hljs) {

@@ -1,20 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { BlogProvider } from "../context/BlogContext";
 import BlogAppShell from "../components/BlogAppShell";
 import { blogConfig } from "../config/blogConfig";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 /// @brief 루트 레이아웃 메타데이터입니다.
 export const metadata: Metadata = {
@@ -46,6 +35,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const fontFamily = 'fontFamily' in blogConfig && typeof blogConfig.fontFamily === 'string'
+    ? blogConfig.fontFamily
+    : undefined;
+  const codeFontFamily = 'codeFontFamily' in blogConfig && typeof blogConfig.codeFontFamily === 'string'
+    ? blogConfig.codeFontFamily
+    : undefined;
   const bAdsEnabled = blogConfig.ads.enabled === 'true' && blogConfig.ads.adsenseId !== '';
   const bAnalyticsEnabled = blogConfig.analytics.enabled === 'true' && blogConfig.analytics.gaId !== '';
 
@@ -53,7 +48,8 @@ export default function RootLayout({
     <html
       lang="ko"
       data-code-theme={blogConfig.codeTheme}
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      style={{ fontFamily, '--blog-code-font-family': codeFontFamily } as React.CSSProperties}
+      className="h-full antialiased"
       suppressHydrationWarning
     >
       <head>

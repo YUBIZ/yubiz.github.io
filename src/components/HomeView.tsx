@@ -38,7 +38,7 @@ export default function HomeView({ posts }: HomeViewProps) {
               <h3 className="text-lg font-bold text-zinc-900 group-hover:text-zinc-600 dark:text-zinc-50 dark:group-hover:text-zinc-300 transition-colors leading-snug">
                 {post.title}
               </h3>
-              <p className="mt-1.5 text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2 leading-relaxed font-serif">
+              <p className="mt-1.5 text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2 leading-relaxed">
                 {post.excerpt}
               </p>
             </article>

@@ -36,7 +36,7 @@ export default function TableOfContents({ headings, onHeadingClick }: TableOfCon
               onClick={() => onHeadingClick(heading.id)}
               className={`block w-full text-left text-xs transition-colors cursor-pointer text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300 ${levelClass}`}
             >
-              <span className="mr-1 font-mono text-zinc-300 dark:text-zinc-700">{heading.number}</span>
+              <span className="mr-1 text-zinc-300 dark:text-zinc-700">{heading.number}</span>
               {heading.text}
             </button>
           );

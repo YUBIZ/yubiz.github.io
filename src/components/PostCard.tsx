@@ -25,7 +25,7 @@ export default function PostCard({ post: InPost, onClick: InOnClick }: PostCardP
       </h2>
       <p
         onClick={InOnClick}
-        className="mt-2 text-sm text-zinc-600 dark:text-zinc-400 line-clamp-3 leading-relaxed cursor-pointer font-serif"
+        className="mt-2 text-sm text-zinc-600 dark:text-zinc-400 line-clamp-3 leading-relaxed cursor-pointer"
       >
         {InPost.excerpt}
       </p>

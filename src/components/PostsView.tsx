@@ -164,7 +164,7 @@ export default function PostsView({ posts }: PostsViewProps) {
               }`}
             >
               {cat}
-              <span className="ml-1 opacity-60 font-mono">{categoryCounts[cat] || 0}</span>
+              <span className="ml-1 opacity-60">{categoryCounts[cat] || 0}</span>
             </button>
           );
         })}
