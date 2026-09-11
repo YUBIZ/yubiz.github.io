@@ -52,23 +52,7 @@ button:disabled {
 .dark .code-block { scrollbar-color: #52525b transparent; }
 .dark .code-block::-webkit-scrollbar-thumb { background: #52525b; }
 
-/* 인라인 코드 */
-code:not(.hljs) {
-  display: inline-block;
-  padding: 0.125rem 0.25rem;
-  border-radius: 0.25rem;
-  background: #f4f4f5;
-  color: #3f3f46;
-  font-family: var(--blog-code-font-family, inherit);
-  font-size: 0.8125em;
-}
-
 .code-block,
 .code-block code.hljs {
   font-family: var(--blog-code-font-family, inherit);
-}
-
-.dark code:not(.hljs) {
-  background: #27272a;
-  color: #d4d4d8;
 }

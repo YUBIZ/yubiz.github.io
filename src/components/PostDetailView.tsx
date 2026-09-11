@@ -1,30 +1,16 @@
 'use client';
 
-import React, { useMemo } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import rehypeHighlight from 'rehype-highlight';
-import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
-import rehypeSlug from 'rehype-slug';
-import { getHeadings } from '../lib/markdownToc';
-import { useBlog } from '../context/BlogContext';
+import React, { useCallback, useMemo, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import Sidebar from './Sidebar';
-import TableOfContents from './TableOfContents';
+import { useBlog } from '../context/BlogContext';
+import { getHeadings } from '../lib/markdownToc';
 import { Post } from '../types/blog';
 import { blogConfig } from '../config/blogConfig';
 import Ad from './Ad';
-
-const sanitizeSchema = {
-  ...defaultSchema,
-  attributes: {
-    ...defaultSchema.attributes,
-    code: [
-      ...(defaultSchema.attributes?.code || []),
-      ['className', /^(?:hljs(?:-[\w-]+)?|language-[\w-]+)$/],
-    ],
-  },
-};
+import ImageLightbox from './ImageLightbox';
+import MarkdownContent from './MarkdownContent';
+import Sidebar from './Sidebar';
+import TableOfContents from './TableOfContents';
 
 interface PostDetailViewProps {
   post: Post;
@@ -32,53 +18,10 @@ interface PostDetailViewProps {
 
 export default function PostDetailView({ post: InPost }: PostDetailViewProps) {
   const { setView, setSelectedCategory } = useBlog();
+  const [selectedImage, setSelectedImage] = useState<{ src: string; alt: string } | null>(null);
   const headings = useMemo(() => getHeadings(InPost.content), [InPost.content]);
-
-  const markdownComponents = {
-    h1: function MarkdownH1({ children, id }: { children?: React.ReactNode; id?: string }) {
-      return <h2 id={id} className="mt-10 mb-4 text-2xl font-bold text-zinc-900 dark:text-zinc-50 scroll-mt-20">{children}</h2>;
-    },
-    h2: function MarkdownH2({ children, id }: { children?: React.ReactNode; id?: string }) {
-      return <h3 id={id} className="mt-10 mb-4 text-xl font-bold text-zinc-900 dark:text-zinc-50 scroll-mt-20">{children}</h3>;
-    },
-    h3: function MarkdownH3({ children, id }: { children?: React.ReactNode; id?: string }) {
-      return <h4 id={id} className="mt-8 mb-3 text-lg font-bold text-zinc-900 dark:text-zinc-50 scroll-mt-20">{children}</h4>;
-    },
-    h4: function MarkdownH4({ children, id }: { children?: React.ReactNode; id?: string }) {
-      return <h5 id={id} className="mt-8 mb-3 text-base font-bold text-zinc-900 dark:text-zinc-50 scroll-mt-20">{children}</h5>;
-    },
-    p: ({ children }: { children?: React.ReactNode }) => (
-      <p className="mb-6 leading-relaxed text-zinc-800 dark:text-zinc-200 text-[15px] sm:text-base break-keep">{children}</p>
-    ),
-    blockquote: ({ children }: { children?: React.ReactNode }) => (
-      <blockquote className="my-6 border-l-2 border-zinc-300 pl-4 italic text-zinc-600 dark:border-zinc-700 dark:text-zinc-400">{children}</blockquote>
-    ),
-    ul: ({ children }: { children?: React.ReactNode }) => (
-      <ul className="my-4 space-y-1.5 text-zinc-700 dark:text-zinc-300 leading-relaxed text-[15px] list-disc pl-5">{children}</ul>
-    ),
-    ol: ({ children }: { children?: React.ReactNode }) => (
-      <ol className="my-4 space-y-1.5 text-zinc-700 dark:text-zinc-300 leading-relaxed text-[15px] list-decimal pl-5">{children}</ol>
-    ),
-    table: ({ children }: { children?: React.ReactNode }) => (
-      <div className="my-6 overflow-x-auto"><table className="w-full border-collapse text-left text-sm">{children}</table></div>
-    ),
-    th: ({ children }: { children?: React.ReactNode }) => (
-      <th className="border-b border-zinc-300 px-3 py-2 font-semibold dark:border-zinc-700">{children}</th>
-    ),
-    td: ({ children }: { children?: React.ReactNode }) => (
-      <td className="border-b border-zinc-200 px-3 py-2 align-top dark:border-zinc-800">{children}</td>
-    ),
-    pre: ({ children }: { children?: React.ReactNode }) => (
-      <pre className="code-block my-6 overflow-x-auto">{children}</pre>
-    ),
-    a: ({ href, children }: { href?: string; children?: React.ReactNode }) => (
-      <a href={href} target="_blank" rel="noopener noreferrer" className="text-zinc-900 underline dark:text-zinc-50 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">{children}</a>
-    ),
-    img: ({ src, alt }: { src?: string | Blob; alt?: string }) => (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img src={typeof src === 'string' ? src : undefined} alt={alt || ''} className="my-6 rounded-md border border-zinc-200 dark:border-zinc-800" loading="lazy" />
-    ),
-  };
+  const handleImageClick = useCallback((src: string, alt: string) => setSelectedImage({ src, alt }), []);
+  const closeImage = useCallback(() => setSelectedImage(null), []);
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8 sm:py-10 animate-fade-in">
@@ -100,9 +43,9 @@ export default function PostDetailView({ post: InPost }: PostDetailViewProps) {
             </div>
           </header>
 
-          <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[[rehypeSanitize, sanitizeSchema], rehypeSlug, rehypeHighlight]} components={markdownComponents}>
-            {InPost.content}
-          </ReactMarkdown>
+          <MarkdownContent content={InPost.content} onImageClick={handleImageClick} />
+
+          {selectedImage && <ImageLightbox {...selectedImage} onClose={closeImage} />}
 
           <Ad slot={blogConfig.ads.slotPostDetail} />
 
