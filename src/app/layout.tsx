@@ -15,17 +15,17 @@ export const metadata: Metadata = {
   openGraph: {
     title: blogConfig.title,
     description: blogConfig.description,
-    type: 'website',
+    type: "website",
   },
 };
 
 /// @brief 뷰포트 및 테마 색상 설정입니다.
 export const viewport: Viewport = {
-  width: 'device-width',
+  width: "device-width",
   initialScale: 1,
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#fafafa' },
-    { media: '(prefers-color-scheme: dark)', color: '#09090b' },
+    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
+    { media: "(prefers-color-scheme: dark)", color: "#09090b" },
   ],
 };
 
@@ -35,20 +35,30 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const fontFamily = 'fontFamily' in blogConfig && typeof blogConfig.fontFamily === 'string'
-    ? blogConfig.fontFamily
-    : undefined;
-  const codeFontFamily = 'codeFontFamily' in blogConfig && typeof blogConfig.codeFontFamily === 'string'
-    ? blogConfig.codeFontFamily
-    : undefined;
-  const bAdsEnabled = blogConfig.ads.enabled === 'true' && blogConfig.ads.adsenseId !== '';
-  const bAnalyticsEnabled = blogConfig.analytics.enabled === 'true' && blogConfig.analytics.gaId !== '';
+  const fontFamily =
+    "fontFamily" in blogConfig && typeof blogConfig.fontFamily === "string"
+      ? blogConfig.fontFamily
+      : undefined;
+  const codeFontFamily =
+    "codeFontFamily" in blogConfig &&
+    typeof blogConfig.codeFontFamily === "string"
+      ? blogConfig.codeFontFamily
+      : undefined;
+  const bAdsEnabled =
+    blogConfig.ads.enabled === "true" && blogConfig.ads.adsenseId !== "";
+  const bAnalyticsEnabled =
+    blogConfig.analytics.enabled === "true" && blogConfig.analytics.gaId !== "";
 
   return (
     <html
       lang="ko"
       data-code-theme={blogConfig.codeTheme}
-      style={{ fontFamily, '--blog-code-font-family': codeFontFamily } as React.CSSProperties}
+      style={
+        {
+          fontFamily,
+          "--blog-code-font-family": codeFontFamily,
+        } as React.CSSProperties
+      }
       className="h-full antialiased"
       suppressHydrationWarning
     >
