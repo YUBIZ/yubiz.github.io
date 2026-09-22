@@ -8,12 +8,12 @@ tags: [.NET, Blazor, "Blazor WebAssembly", "Tailwind CSS", Tailwind, CSS, Gulp]
 
 Blazor WebAssembly 프로젝트에 Tailwind CSS v4.0을 적용하는 법을 설명합니다.
 
-본 내용은 윈도우를 기준으로 작성되었습니다.\
+본 내용은 윈도우를 기준으로 작성되었습니다.
 타 OS에서의 작동을 보장하지 않습니다.
 
 # 환경 구성하기
 
-먼저 `NPM`이 필요합니다.\
+먼저 `NPM`이 필요합니다.
 `NPM`은 `Node.js` 설치 시 함께 제공됩니다.
 
 프로젝트 디렉터리로 이동 후, 아래의 명령어를 실행합니다.
@@ -30,7 +30,7 @@ npm install tailwindcss @tailwindcss/cli
 @import "tailwindcss";
 ```
 
-Tailwind CSS는 표준 CSS로 변환해야 사용할 수 있습니다.\
+Tailwind CSS는 표준 CSS로 변환해야 사용할 수 있습니다.
 아래의 명령어를 실행해 표준 CSS로 변환합니다.
 
 ```
@@ -47,7 +47,7 @@ npx @tailwindcss/cli -i wwwroot/css/app.css -o wwwroot/css/app.gen.css --minify
 
 # CSS 격리
 
-Blazor에는 CSS 모듈화를 위한 CSS 격리라는 기능이 있습니다.\
+Blazor에는 CSS 모듈화를 위한 CSS 격리라는 기능이 있습니다.
 컴포넌트마다 별도의 CSS 파일을 만들어 스타일을 정의하는 기능으로, 중복 문제를 피할 수 있게 해줍니다.
 
 그러나 Tailwind CSS는 CSS 모듈을 사용하지 않기를 권장합니다.
@@ -60,7 +60,7 @@ Blazor에는 CSS 모듈화를 위한 CSS 격리라는 기능이 있습니다.\
 @reference "tailwindcss";
 ```
 
-격리된 CSS 역시 표준 CSS로 변환이 필요합니다.\
+격리된 CSS 역시 표준 CSS로 변환이 필요합니다.
 하지만 개별 파일마다 변환은 비효율적이므로, 다른 방법을 사용합니다.
 
 격리된 CSS는 빌드 시 모두 `{AssemblyName}.styles.css` 파일로 합쳐집니다.
@@ -72,7 +72,7 @@ Blazor에는 CSS 모듈화를 위한 CSS 격리라는 기능이 있습니다.\
 
 Tailwind CSS는 사용자가 다양한 커스텀 스타일을 정의할 수 있습니다.
 
-CSS 모듈은 개별적으로 처리되기 때문에, 커스텀 스타일을 알 수 없습니다.\
+CSS 모듈은 개별적으로 처리되기 때문에, 커스텀 스타일을 알 수 없습니다.
 그렇기에 스타일이 정의되어 있는 전역 스타일 CSS를 참조해야합니다.
 
 각 파일의 상단에 `@import "tailwindcss";` 대신 아래의 내용을 추가합니다.
@@ -96,15 +96,15 @@ CSS 모듈은 개별적으로 처리되기 때문에, 커스텀 스타일을 알
 
 # 핫 리로드
 
-Blazor에는 핫 리로드 기능이 있습니다.\
+Blazor에는 핫 리로드 기능이 있습니다.
 다시 시작하지않고도 코드 변경 내용을 적용할 수 있는 기능으로 매우 유용한 기능으로, Tailwind CSS와 함께 사용할 수 있습니다.
 
-Tailwind CSS는 최적화를 위해 사용하지않는 스타일은 포함하지않습니다.\
+Tailwind CSS는 최적화를 위해 사용하지않는 스타일은 포함하지않습니다.
 그렇기에 기존에 사용하지 않던 유틸리티 클래스를 사용한다면 새롭게 CSS를 변환해줘야 합니다.
 
 ## 일반 CSS 파일 변환하기
 
-일반 CSS 파일에 변경사항이 발생하면 이전에 사용했던 명령어를 실행하면 됩니다.\
+일반 CSS 파일에 변경사항이 발생하면 이전에 사용했던 명령어를 실행하면 됩니다.
 하지만 매번 직접하기에는 번거로우니, `--watch` 옵션을 추가해 자동으로 변경사항이 발생할 때마다 변환되도록 합니다.
 
 ```
@@ -115,8 +115,8 @@ npx @tailwindcss/cli -i wwwroot/css/app.css -o wwwroot/css/app.gen.css --minify 
 
 ## 격리된 CSS 파일 변환하기
 
-격리된 CSS 파일은 변경사항이 발생하면, 표준 CSS로 변환되지 않은 원본이 `{AssemblyName}.styles.css'의 내용을 대체하게 됩니다.\
-그렇기에 `{AssemblyName}.styles.css'을 다시 변환해줘야 하는데, 여기서 문제가 있습니다.\
+격리된 CSS 파일은 변경사항이 발생하면, 표준 CSS로 변환되지 않은 원본이 `{AssemblyName}.styles.css'의 내용을 대체하게 됩니다.
+그렇기에 `{AssemblyName}.styles.css'을 다시 변환해줘야 하는데, 여기서 문제가 있습니다.
 이전에 사용했던 명령어는 MSBuild의 매크로 변수를 사용했기에 별도로 실행하려면 전체 경로를 직접 작성해야합니다.
 
 하지만 개발 설정이 달라질 때마다 수동으로 경로를 수정하는건 말도 안되니 다른 방법을 찾아봤습니다.
@@ -147,7 +147,7 @@ dotnet build -t:Watch -p:SkipBuild=true
 </Target>
 ```
 
-이제 `Watch`를 실행하면 터미널이 나오게 됩니다.\
+이제 `Watch`를 실행하면 터미널이 나오게 됩니다.
 해당 창을 종료하면, 감시도 중단됩니다.
 
 ## 프로젝트가 열리면 감시 실행하기
@@ -189,7 +189,7 @@ exports.watch = function (cb) {
 
 # 마무리
 
-Tailwind CSS v4.0이 나온지 얼마 안됐다보니 관련 자료 찾기가 많이 힘들었습니다.\
+Tailwind CSS v4.0이 나온지 얼마 안됐다보니 관련 자료 찾기가 많이 힘들었습니다.
 특히 Blazor가 생각보다 마이너해서 Tailwind CSS와 함께 사용한 경우가 별로 없어서 더 그랬던 것 같습니다.
 
 언젠가 비주얼 스튜디오나 Blazor 프로젝트 자체에서 지원해줬으면 좋겠네요.

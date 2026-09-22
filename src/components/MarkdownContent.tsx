@@ -3,6 +3,7 @@
 import React, { useMemo, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkBreaks from 'remark-breaks';
 import rehypeHighlight from 'rehype-highlight';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import rehypeSlug from 'rehype-slug';
@@ -96,5 +97,5 @@ export default function MarkdownContent({ content, onImageClick }: MarkdownConte
     },
   }), [onImageClick]);
 
-  return <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[[rehypeSanitize, sanitizeSchema], rehypeSlug, [rehypeHighlight, { detect: true }]]} components={components}>{content}</ReactMarkdown>;
+  return <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]} rehypePlugins={[[rehypeSanitize, sanitizeSchema], rehypeSlug, [rehypeHighlight, { detect: true }]]} components={components}>{content}</ReactMarkdown>;
 }
