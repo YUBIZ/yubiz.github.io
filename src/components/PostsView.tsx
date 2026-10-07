@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { useBlog } from '../context/BlogContext';
-import { Post } from '../types/blog';
-import PostCard from './PostCard';
-import { Search, X, ChevronDown } from 'lucide-react';
-import { blogConfig } from '../config/blogConfig';
-import Ad from './Ad';
+import React, { useState } from "react";
+import { useBlog } from "../context/BlogContext";
+import { Post } from "../types/blog";
+import PostCard from "./PostCard";
+import { Search, X, ChevronDown } from "lucide-react";
+import { blogConfig } from "../config/blogConfig";
+import Ad from "./Ad";
 
-type SortBy = 'newest' | 'oldest' | 'alphabetical';
+type SortBy = "newest" | "oldest" | "alphabetical";
 
 /// @brief 게시글 목록 화면 컴포넌트의 Props 인터페이스입니다.
 interface PostsViewProps {
@@ -29,45 +29,55 @@ export default function PostsView({ posts }: PostsViewProps) {
     setView,
   } = useBlog();
 
-  const [sortBy, setSortBy] = useState<SortBy>('newest');
+  const [sortBy, setSortBy] = useState<SortBy>("newest");
 
   const categories = React.useMemo(() => {
-    const uniqueCats = Array.from(new Set(posts.map(p => p.category))).filter(Boolean);
+    const uniqueCats = Array.from(new Set(posts.map((p) => p.category))).filter(
+      Boolean,
+    );
     return [blogConfig.text.allCategory, ...uniqueCats];
   }, [posts]);
 
   const categoryCounts = React.useMemo(() => {
     const counts: Record<string, number> = {};
-    posts.forEach(post => { counts[post.category] = (counts[post.category] || 0) + 1; });
+    posts.forEach((post) => {
+      counts[post.category] = (counts[post.category] || 0) + 1;
+    });
     counts[blogConfig.text.allCategory] = posts.length;
     return counts;
   }, [posts]);
 
   const allTags = React.useMemo(() => {
     const tagsSet = new Set<string>();
-    posts.forEach(post => post.tags.forEach(tag => tagsSet.add(tag)));
+    posts.forEach((post) => post.tags.forEach((tag) => tagsSet.add(tag)));
     return Array.from(tagsSet).sort();
   }, [posts]);
 
-  const isTagAvailable = React.useCallback((InTag: string) => {
-    if (selectedTags.includes(InTag)) return true;
-    const prospectiveTags = [...selectedTags, InTag];
-    return posts.some(post => {
-      const bMatchesCategory = selectedCategory === blogConfig.text.allCategory || post.category === selectedCategory;
-      if (!bMatchesCategory) return false;
-      return prospectiveTags.every(t => post.tags.includes(t));
-    });
-  }, [posts, selectedCategory, selectedTags]);
-
+  const isTagAvailable = React.useCallback(
+    (InTag: string) => {
+      if (selectedTags.includes(InTag)) return true;
+      const prospectiveTags = [...selectedTags, InTag];
+      return posts.some((post) => {
+        const bMatchesCategory =
+          selectedCategory === blogConfig.text.allCategory ||
+          post.category === selectedCategory;
+        if (!bMatchesCategory) return false;
+        return prospectiveTags.every((t) => post.tags.includes(t));
+      });
+    },
+    [posts, selectedCategory, selectedTags],
+  );
 
   const filteredPosts = React.useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
 
-    return posts.filter(post => {
-      const bMatchesCategory = selectedCategory === blogConfig.text.allCategory || post.category === selectedCategory;
+    return posts.filter((post) => {
+      const bMatchesCategory =
+        selectedCategory === blogConfig.text.allCategory ||
+        post.category === selectedCategory;
       if (!bMatchesCategory) return false;
 
-      const bMatchesTags = selectedTags.every(tag => post.tags.includes(tag));
+      const bMatchesTags = selectedTags.every((tag) => post.tags.includes(tag));
       if (!bMatchesTags) return false;
 
       if (!query) return true;
@@ -75,25 +85,29 @@ export default function PostsView({ posts }: PostsViewProps) {
       const terms = query.split(/\s+/).filter(Boolean);
       if (terms.length === 0) return true;
 
-      return terms.every(term => {
+      return terms.every((term) => {
         const bMatchesTitle = post.title.toLowerCase().includes(term);
-        const bMatchesTags = post.tags.some(t => t.toLowerCase().includes(term));
+        const bMatchesTags = post.tags.some((t) =>
+          t.toLowerCase().includes(term),
+        );
         if (term.length === 1) return bMatchesTitle || bMatchesTags;
         const bMatchesExcerpt = post.excerpt.toLowerCase().includes(term);
         const bMatchesContent = post.content.toLowerCase().includes(term);
-        return bMatchesTitle || bMatchesTags || bMatchesExcerpt || bMatchesContent;
+        return (
+          bMatchesTitle || bMatchesTags || bMatchesExcerpt || bMatchesContent
+        );
       });
     });
   }, [posts, selectedCategory, selectedTags, searchQuery]);
 
   const sortedAndFilteredPosts = React.useMemo(() => {
     const result = [...filteredPosts];
-    if (sortBy === 'newest') {
+    if (sortBy === "newest") {
       result.sort((a, b) => {
         const c = b.createdAt.localeCompare(a.createdAt);
         return c !== 0 ? c : a.title.localeCompare(b.title);
       });
-    } else if (sortBy === 'oldest') {
+    } else if (sortBy === "oldest") {
       result.sort((a, b) => {
         const c = a.createdAt.localeCompare(b.createdAt);
         return c !== 0 ? c : a.title.localeCompare(b.title);
@@ -104,9 +118,8 @@ export default function PostsView({ posts }: PostsViewProps) {
     return result;
   }, [filteredPosts, sortBy]);
 
-
   React.useEffect(() => {
-    const validTags = selectedTags.filter(tag => isTagAvailable(tag));
+    const validTags = selectedTags.filter((tag) => isTagAvailable(tag));
     if (validTags.length !== selectedTags.length) {
       setSelectedTags(validTags);
     }
@@ -140,7 +153,7 @@ export default function PostsView({ posts }: PostsViewProps) {
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400 dark:text-zinc-500" />
           {searchQuery && (
             <button
-              onClick={() => setSearchQuery('')}
+              onClick={() => setSearchQuery("")}
               className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300 cursor-pointer"
             >
               <X className="h-3.5 w-3.5" />
@@ -151,20 +164,18 @@ export default function PostsView({ posts }: PostsViewProps) {
 
       {/* 카테고리 */}
       <div className="flex flex-wrap gap-1.5 mb-3">
-        {categories.map(cat => {
+        {categories.map((cat) => {
           const bIsActive = selectedCategory === cat;
           return (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`rounded px-2 py-0.5 text-xs font-medium transition-colors cursor-pointer ${
-                bIsActive
-                  ? 'bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-950'
-                  : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:text-zinc-50 dark:hover:bg-zinc-900'
-              }`}
+              className={`rounded px-2 py-0.5 text-xs font-medium transition-colors cursor-pointer ${bIsActive ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-950" : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:text-zinc-50 dark:hover:bg-zinc-900"}`}
             >
               {cat}
-              <span className="ml-1 opacity-60">{categoryCounts[cat] || 0}</span>
+              <span className="ml-1 opacity-60">
+                {categoryCounts[cat] || 0}
+              </span>
             </button>
           );
         })}
@@ -173,24 +184,20 @@ export default function PostsView({ posts }: PostsViewProps) {
       {/* 태그 */}
       {allTags.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mb-4 pb-4 border-b border-zinc-200 dark:border-zinc-800">
-          {allTags.map(tag => {
+          {allTags.map((tag) => {
             const bIsActive = selectedTags.includes(tag);
             const bIsAvailable = isTagAvailable(tag);
             return (
               <button
                 key={tag}
                 onClick={() => {
-                  if (bIsActive) setSelectedTags(selectedTags.filter(t => t !== tag));
-                  else if (bIsAvailable) setSelectedTags([...selectedTags, tag]);
+                  if (bIsActive)
+                    setSelectedTags(selectedTags.filter((t) => t !== tag));
+                  else if (bIsAvailable)
+                    setSelectedTags([...selectedTags, tag]);
                 }}
                 disabled={!bIsActive && !bIsAvailable}
-                className={`rounded px-2 py-0.5 text-xs font-medium transition-colors cursor-pointer ${
-                  bIsActive
-                    ? 'bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-950'
-                    : !bIsAvailable
-                    ? 'text-zinc-300 dark:text-zinc-700 cursor-not-allowed'
-                    : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:text-zinc-50 dark:hover:bg-zinc-900'
-                }`}
+                className={`rounded px-2 py-0.5 text-xs font-medium transition-colors cursor-pointer ${bIsActive ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-950" : !bIsAvailable ? "text-zinc-300 dark:text-zinc-700 cursor-not-allowed" : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:text-zinc-50 dark:hover:bg-zinc-900"}`}
               >
                 #{tag}
               </button>
@@ -216,13 +223,15 @@ export default function PostsView({ posts }: PostsViewProps) {
       {sortedAndFilteredPosts.length > 0 ? (
         sortedAndFilteredPosts.map((post, index) => (
           <React.Fragment key={post.id}>
-            <PostCard post={post} onClick={() => setView('post', post.id)} />
+            <PostCard post={post} onClick={() => setView("post", post.id)} />
             {index === 2 && <Ad slot={blogConfig.ads.slotPostsList} />}
           </React.Fragment>
         ))
       ) : (
         <div className="py-20 text-center">
-          <p className="text-zinc-500 dark:text-zinc-400">{blogConfig.text.noResults}</p>
+          <p className="text-zinc-500 dark:text-zinc-400">
+            {blogConfig.text.noResults}
+          </p>
         </div>
       )}
     </div>

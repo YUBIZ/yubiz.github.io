@@ -6,17 +6,19 @@
     "dev": "tsx scripts/prebuild.ts && next dev",
     "build": "tsx scripts/prebuild.ts && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",
     "highlight.js": "^11.12.0",
-    "lucide-react": "^1.16.0",
+    "lucide-react": "^1.52.0",
     "mdast-util-to-string": "^4.0.0",
-    "next": "^16.3.4",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
+    "next": "^16.4.0",
+    "prettier": "^3.9.9",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
     "react-markdown": "^10.1.0",
     "rehype-highlight": "^7.0.2",
     "rehype-sanitize": "^6.0.0",
@@ -26,18 +28,18 @@
     "remark-parse": "^11.0.0",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0",
-    "yaml": "^2.9.0"
+    "yaml": "^2.9.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^26",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.6",
+    "eslint": "^10",
+    "eslint-config-next": "^16.4.0",
     "tailwindcss": "^4",
-    "tsx": "^4.22.3",
-    "typescript": "^5"
+    "tsx": "^4.23.15",
+    "typescript": "^7"
   },
   "allowScripts": {
     "sharp@0.34.5": true,

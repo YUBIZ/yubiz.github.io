@@ -1,4 +1,4 @@
-import matter from 'gray-matter';
+import matter from "gray-matter";
 
 export interface FrontMatter {
   title?: string;
@@ -6,13 +6,19 @@ export interface FrontMatter {
   tags?: string[];
 }
 
-export function parseMarkdown(InFileContent: string): { metadata: FrontMatter; content: string } {
+export function parseMarkdown(InFileContent: string): {
+  metadata: FrontMatter;
+  content: string;
+} {
   const { data, content } = matter(InFileContent);
   const metadata: FrontMatter = {
-    title: typeof data.title === 'string' ? data.title : undefined,
-    date: typeof data.date === 'string' ? data.date : undefined,
+    title: typeof data.title === "string" ? data.title : undefined,
+    date: typeof data.date === "string" ? data.date : undefined,
     tags: Array.isArray(data.tags) ? data.tags.map(String) : undefined,
   };
 
-  return { metadata, content };
+  return {
+    metadata,
+    content,
+  };
 }

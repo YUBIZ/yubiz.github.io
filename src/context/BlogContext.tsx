@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { ViewType } from '../types/blog';
-import { blogConfig } from '../config/blogConfig';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { ViewType } from "../types/blog";
+import { blogConfig } from "../config/blogConfig";
 
 /// @brief 블로그 UI 상태 컨텍스트 인터페이스입니다.
 interface BlogContextType {
@@ -24,8 +24,10 @@ const BlogContext = createContext<BlogContextType | undefined>(undefined);
 export function BlogProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>(blogConfig.text.allCategory);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    blogConfig.text.allCategory,
+  );
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [darkMode, setDarkMode] = useState(false);
 
@@ -33,16 +35,16 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
   // 비동기로 실행하여 초기 렌더링 중 추가 동기 렌더링을 방지합니다.
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      setDarkMode(document.documentElement.classList.contains('dark'));
+      setDarkMode(document.documentElement.classList.contains("dark"));
     }, 0);
     return () => window.clearTimeout(timer);
   }, []);
 
   /// @brief 뷰를 전환하고 URL 경로를 업데이트합니다.
   const setView = (InView: ViewType, InPostId: string | null = null) => {
-    let targetPath = '/';
-    if (InView === 'post' && InPostId) targetPath = `/post/${InPostId}/`;
-    else if (InView === 'posts') targetPath = '/posts/';
+    let targetPath = "/";
+    if (InView === "post" && InPostId) targetPath = `/post/${InPostId}/`;
+    else if (InView === "posts") targetPath = "/posts/";
     router.push(targetPath);
   };
 
@@ -50,15 +52,22 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
   const toggleDarkMode = () => {
     const bNewDarkMode = !darkMode;
     setDarkMode(bNewDarkMode);
-    document.documentElement.classList.toggle('dark', bNewDarkMode);
-    localStorage.setItem('theme', bNewDarkMode ? 'dark' : 'light');
+    document.documentElement.classList.toggle("dark", bNewDarkMode);
+    localStorage.setItem("theme", bNewDarkMode ? "dark" : "light");
   };
 
   return (
     <BlogContext.Provider
       value={{
-        searchQuery, selectedCategory, selectedTags, darkMode,
-        setSearchQuery, setSelectedCategory, setSelectedTags, toggleDarkMode, setView,
+        searchQuery,
+        selectedCategory,
+        selectedTags,
+        darkMode,
+        setSearchQuery,
+        setSelectedCategory,
+        setSelectedTags,
+        toggleDarkMode,
+        setView,
       }}
     >
       {children}
@@ -70,7 +79,7 @@ export function BlogProvider({ children }: { children: React.ReactNode }) {
 export function useBlog() {
   const context = useContext(BlogContext);
   if (context === undefined) {
-    throw new Error('useBlog는 BlogProvider 내부에서만 사용할 수 있습니다.');
+    throw new Error("useBlog는 BlogProvider 내부에서만 사용할 수 있습니다.");
   }
   return context;
 }

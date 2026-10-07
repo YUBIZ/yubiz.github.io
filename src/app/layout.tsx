@@ -24,8 +24,14 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
-    { media: "(prefers-color-scheme: dark)", color: "#09090b" },
+    {
+      media: "(prefers-color-scheme: light)",
+      color: "#fafafa",
+    },
+    {
+      media: "(prefers-color-scheme: dark)",
+      color: "#09090b",
+    },
   ],
 };
 
@@ -84,11 +90,10 @@ export default function RootLayout({
       <body className="min-h-full">
         {/* Google AdSense (광고 활성화 시에만 로드) */}
         {bAdsEnabled && (
-          <Script
+          <script
             async
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${blogConfig.ads.adsenseId}`}
             crossOrigin="anonymous"
-            strategy="afterInteractive"
           />
         )}
         {/* Google Analytics (분석 활성화 시에만 로드) */}

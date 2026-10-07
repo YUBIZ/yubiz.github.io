@@ -10,4 +10,4 @@ export interface Post {
 }
 
 /// @brief 블로그의 라우팅 뷰 타입입니다.
-export type ViewType = 'home' | 'posts' | 'post';
+export type ViewType = "home" | "posts" | "post";

@@ -19,8 +19,12 @@
 }
 
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 body {
@@ -28,7 +32,9 @@ body {
   color: var(--foreground);
 }
 
-button, a, [role="button"] {
+button,
+a,
+[role="button"] {
   cursor: pointer;
 }
 
@@ -36,21 +42,34 @@ button:disabled {
   cursor: not-allowed;
 }
 
-.toc-no-scrollbar::-webkit-scrollbar { display: none; }
-.toc-no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.toc-no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.toc-no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
 .code-block {
   scrollbar-width: thin;
   scrollbar-color: #d4d4d8 transparent;
 }
-.code-block::-webkit-scrollbar { height: 6px; }
-.code-block::-webkit-scrollbar-track { background: transparent; }
+.code-block::-webkit-scrollbar {
+  height: 6px;
+}
+.code-block::-webkit-scrollbar-track {
+  background: transparent;
+}
 .code-block::-webkit-scrollbar-thumb {
   border-radius: 9999px;
   background: #d4d4d8;
 }
-.dark .code-block { scrollbar-color: #52525b transparent; }
-.dark .code-block::-webkit-scrollbar-thumb { background: #52525b; }
+.dark .code-block {
+  scrollbar-color: #52525b transparent;
+}
+.dark .code-block::-webkit-scrollbar-thumb {
+  background: #52525b;
+}
 
 .code-block,
 .code-block code.hljs {

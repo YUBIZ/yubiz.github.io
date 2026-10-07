@@ -1,12 +1,15 @@
-import { blogConfig } from '../config/blogConfig';
-import type { HeadingItem } from '../types/markdown';
+import { blogConfig } from "../config/blogConfig";
+import type { HeadingItem } from "../types/markdown";
 
 interface TableOfContentsProps {
   headings: HeadingItem[];
   onHeadingClick: (InId: string) => void;
 }
 
-export default function TableOfContents({ headings, onHeadingClick }: TableOfContentsProps) {
+export default function TableOfContents({
+  headings,
+  onHeadingClick,
+}: TableOfContentsProps) {
   if (headings.length === 0) return null;
 
   return (
@@ -15,13 +18,14 @@ export default function TableOfContents({ headings, onHeadingClick }: TableOfCon
         {blogConfig.text.tocTitle}
       </h3>
       <div className="space-y-2">
-        {headings.map(heading => {
-          const levelClass = {
-            1: 'pl-0 font-medium',
-            2: 'pl-2',
-            3: 'pl-4',
-            4: 'pl-6',
-          }[heading.level] || 'pl-0';
+        {headings.map((heading) => {
+          const levelClass =
+            {
+              1: "pl-0 font-medium",
+              2: "pl-2",
+              3: "pl-4",
+              4: "pl-6",
+            }[heading.level] || "pl-0";
 
           return (
             <button
@@ -29,7 +33,9 @@ export default function TableOfContents({ headings, onHeadingClick }: TableOfCon
               onClick={() => onHeadingClick(heading.id)}
               className={`block w-full text-left text-xs transition-colors cursor-pointer text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300 ${levelClass}`}
             >
-              <span className="mr-1 text-zinc-300 dark:text-zinc-700">{heading.number}</span>
+              <span className="mr-1 text-zinc-300 dark:text-zinc-700">
+                {heading.number}
+              </span>
               {heading.text}
             </button>
           );
